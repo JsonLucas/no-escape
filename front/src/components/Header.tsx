@@ -1,12 +1,20 @@
-import { Box, Flex, HStack, Stack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Stack, useColorMode } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaRegUser } from "react-icons/fa";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosMoon, IoIosSunny } from "react-icons/io";
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { toggleColorMode, colorMode } = useColorMode();
+    
     return (
-        <Flex w='100%' h='75px' bgColor='lightgrey' alignItems='center'>
+        <Flex w='100%' h='75px' bgColor='lightgrey' alignItems='center' justifyContent='space-between'>
+            <Box ml='20px' onClick={toggleColorMode} cursor='pointer'>
+                {colorMode === "dark" 
+                    ? <IoIosSunny title="Mudar para modo escuro" color='orange' size={25} /> 
+                    : <IoIosMoon title="Mudar para modo claro" color='black' size={25} />
+                }
+            </Box>
             <HStack p='20px' justifySelf='flex-end' pos='relative'>
                 <Flex alignItems='center' justifyContent='center' w='50px' h='50px' borderRadius='50%' bgColor='grey'>
                     <FaRegUser size={25} />
