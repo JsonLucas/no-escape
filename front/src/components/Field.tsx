@@ -1,6 +1,6 @@
 import { Input, InputGroup, InputLeftElement, InputRightElement, ResponsiveValue } from "@chakra-ui/react";
 import { HTMLInputTypeAttribute, ReactNode } from "react";
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
 
 interface Props {
     name: string,
@@ -12,9 +12,10 @@ interface Props {
         orientation: 'left' | 'right'
     }
     variant?: ResponsiveValue<string>
+    options?: RegisterOptions<FieldValues, string>
 }
 
-export function Field({ name, placeholder, type = "text", variant='outline', addOn, register }: Props) {
+export function Field({ name, placeholder, type = "text", variant='outline', addOn, register, options }: Props) {
     return (
         <InputGroup>
             {addOn && addOn.orientation === 'left' &&
@@ -23,7 +24,7 @@ export function Field({ name, placeholder, type = "text", variant='outline', add
                 </InputLeftElement>
             }
 
-            <Input {...register(name)} placeholder={placeholder} type={type} variant={variant} />
+            <Input {...register(name, options)} placeholder={placeholder} type={type} variant={variant} />
 
             {addOn && addOn.orientation === 'right' &&
                 <InputRightElement pointerEvents='none'>

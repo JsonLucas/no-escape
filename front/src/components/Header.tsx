@@ -20,9 +20,9 @@ export function Header() {
                     <FaRegUser size={25} />
                 </Flex>
                 <IoIosArrowDown size={23} className="arrow-menu" cursor='pointer' onClick={() => setIsMenuOpen(!isMenuOpen)} />
-                {isMenuOpen && <Stack pos='absolute' top='90%' p='5px' bgColor='lightgrey' spacing={5} borderRadius='10px'>
-                        <Box p='5px'>Configurações</Box>
-                        <Box p='5px'>Sair</Box>
+                {isMenuOpen && <Stack pos='absolute' left='-10px' top='90%' p='5px' bgColor='lightgrey' spacing={5} borderRadius='10px'>
+                        <Box>Configurações</Box>
+                        <Box>Sair</Box>
                     </Stack>
                 }
             </HStack>

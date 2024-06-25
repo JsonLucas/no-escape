@@ -21,7 +21,7 @@ export function SignUp() {
     }
 
     return (
-        <Container classList={['center', 'flex']}>
+        <Container classList={['align-items-center', 'justify-content-center', 'flex']}>
             <Stack borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
                 <Field
                     name='name'
