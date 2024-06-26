@@ -1,0 +1,12 @@
+export interface IUser {
+    id: number,
+    name: string,
+    email: string,
+    phone: string,
+    password: string,
+    picture?: string
+}
+
+export type UserInputDTO = Omit<IUser, 'id' | 'picture'>;
+export type UserOutputDTO = Pick<IUser, 'id'>;
+export type LoginInputDTO = Pick<UserInputDTO, 'email'>;

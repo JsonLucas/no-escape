@@ -1,17 +1,22 @@
 import Joi from "joi";
 import { IGenericObject } from "../interfaces/GenericObject";
 
-interface IValidations<S, O>{
-	validate(schema: S, payload: IGenericObject, options: O): Promise<void>
+interface IValidator<S, O>{
+	validate(schema: S, payload: IGenericObject, options: O): Promise<boolean>
 }
 
-export class validations implements IValidations<Joi.ObjectSchema, Joi.AsyncValidationOptions> {
-	async validate(schema: Joi.ObjectSchema, payload: IGenericObject, options?: Joi.AsyncValidationOptions): Promise<void>{
-		try{
+export class Validator implements IValidator<Joi.ObjectSchema, Joi.AsyncValidationOptions> {
+	public async validate(schema: Joi.ObjectSchema, payload: IGenericObject, options?: Joi.AsyncValidationOptions): Promise<boolean>{
+		try {
 			await schema.validateAsync(payload, options);
-		}catch(e: any) {
+			return true;
+		} catch(e: any) {
 			console.log(e);
-			throw { code: 422, error: e };
 		}
+		return false;
 	}
+
+    public static create() {
+        return new Validator();
+    }
 }

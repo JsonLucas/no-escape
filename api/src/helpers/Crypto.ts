@@ -1,8 +1,6 @@
 // import crypto from 'crypto';
 import { createHash, createCipheriv, createDecipheriv } from 'crypto';
-import { cryptoAlgorithm, cryptoIvKey, cryptoSecretKey } from '../utils/constants';
-
-// const crypto = require('crypto');
+import { cryptoAlgorithm, cryptoIvKey, cryptoSecretKey } from '../utils/env';
 
 const key = createHash('sha512').update(cryptoSecretKey, 'utf-8').digest('hex').substring(0, 32);
 const iv = createHash('sha512').update(cryptoIvKey, 'utf-8').digest('hex').substring(0, 16);
@@ -24,5 +22,9 @@ export class Crypto implements ICrypto {
         const decipher = createDecipheriv(cryptoAlgorithm, key, iv);
         const decrypted = `${decipher.update(auxEncrypted, 'base64', 'utf-8')}${decipher.final('utf-8')}`;
         return decrypted;
+    }
+
+    public static create() {
+        return new Crypto();
     }
 }
