@@ -7,10 +7,6 @@ import { Crypto } from "../../../../../helpers/Crypto";
 import { createUserSchema } from "../../../../../utils/schema";
 import { CreateSessionUsecase } from "../../../../../usecases/session/create-session.usecase";
 
-export type CreateProductResponseDto = {
-    id: string;
-};
-
 export class CreateUserRoute implements IRoute {
     private constructor(
         private readonly path: string,

@@ -18,5 +18,5 @@ export const signUpSchema = z.object({
 export const trackingSchema = z.object({
     vehicleName: z.string().max(50, 'O tamanho máximo para o nome do veículo é de 50 caracteres.'),
     vehiclePlate: z.string().max(8, 'O tamanho máximo para a placa do veículo é de 8 caracteres.'),
-    description: z.string()
+    description: z.string().max(100, 'O tamanho máximo para a descrição do rastreio é de 100 caracteres.')
 });

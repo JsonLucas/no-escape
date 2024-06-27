@@ -13,3 +13,9 @@ export const loginSchema = joi.object({
     email: joi.string().email().required(),
     password: joi.string().required()
 });
+
+export const trackingSchema = joi.object({
+    vehicleName: joi.string().required().max(50),
+    vehiclePlate: joi.string().required().max(8),
+    description: joi.string().max(100)
+});
