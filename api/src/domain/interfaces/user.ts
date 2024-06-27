@@ -4,7 +4,7 @@ export interface IUser {
     email: string,
     phone: string,
     password: string,
-    picture?: string
+    picture?: string | null
 }
 
 export type UserInputDTO = Omit<IUser, 'id' | 'picture'>;

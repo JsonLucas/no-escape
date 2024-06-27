@@ -19,3 +19,8 @@ export const trackingSchema = joi.object({
     vehiclePlate: joi.string().required().max(8),
     description: joi.string().max(100)
 });
+
+export const updateUserSchema = { 
+    ...createUserSchema, 
+    picture: joi.string().base64() 
+};

@@ -19,6 +19,7 @@ model Users {
   email String @unique
   phone String @unique
   password String
+  picture String?
   Session Sessions[]
   tracking Trackings[]
 }

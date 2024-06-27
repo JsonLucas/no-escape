@@ -7,10 +7,6 @@ import { GetUserByEmailUsecase } from "../../../../../usecases/user/get-user-by-
 import { UNSUPPORTED_OBJECT, USER_NOT_FOUND } from "../../../../../utils/httpResponse";
 import { CreateSessionUsecase } from "../../../../../usecases/session/create-session.usecase";
 
-export type CreateProductResponseDto = {
-    id: string;
-};
-
 export class UserLoginRoute implements IRoute {
     private constructor(
         private readonly path: string,
