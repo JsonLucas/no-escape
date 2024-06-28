@@ -25,6 +25,13 @@ export class UserRepositoryPrisma implements UserGateway {
         return User.with(updated);
     }
 
+    public async updatePicture(user: User): Promise<User> {
+        const { id, picture } = user;
+        const updated = await this.prisma.users.update({ data: { picture }, where: { id } });
+
+        return User.with(updated);
+    }
+
     public async getById(id: number): Promise<User> {
         const user = await this.prisma.users.findUnique({ where: { id } });
         if(user) return User.with(user);

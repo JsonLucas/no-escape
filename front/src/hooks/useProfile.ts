@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserProfileRequest, updateUserProfileRequest } from "../api/user";
+import { getUserProfileRequest, updateUserProfilePictureRequest, updateUserProfileRequest } from "../api/user";
 import { IUser } from "../interfaces/User";
 import { queryClient } from "../main";
 
@@ -11,12 +11,18 @@ export const useProfile = () => {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user-profile']}) 
     });
 
+    const { mutateAsync: updateProfilePicture } = useMutation({ 
+        mutationFn: (picture: string | ArrayBuffer) => updateUserProfilePictureRequest(picture), 
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user-profile']}) 
+    });
+
     return {
         profile: { 
             data, 
             isLoading, 
             refetch 
         },
-        update: mutateAsync 
+        update: mutateAsync,
+        updateProfilePicture
     }
 }

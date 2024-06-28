@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import { ModalNewTracking } from "../components/Modal/ModalNewTracking";
 import { ModalUpdateTracking } from "../components/Modal/ModalUpdateTracking";
-import { ITrack, Track } from "../interfaces/Track";
+import { ITrack } from "../interfaces/Track";
 import { useTracking } from "../hooks/useTracking";
 import { DeleteTrackingConfirmation } from "../components/Modal/DeleteTrackingConfirmation";
 

@@ -2,6 +2,7 @@ import { IApi } from "..";
 import { IRoute } from "./routes/route";
 import express, { Express } from "express";
 import cors from 'cors';
+import fileUpload from "express-fileupload";
 
 export class ApiExpress implements IApi {
     private app: Express;
@@ -9,6 +10,7 @@ export class ApiExpress implements IApi {
     private constructor(routes: IRoute[]) {
         this.app = express();
         this.app.use(express.json());
+        this.app.use(fileUpload());
         this.app.use(cors());
         this.addRoutes(routes);
     }

@@ -28,3 +28,7 @@ export const updateUserSchema = joi.object({
     password: joi.string().allow('').optional().regex(passwordRegex),
     confirmPassword: joi.string().allow('').optional().valid(joi.ref('password'))
 });
+
+export const updateProfilePictureSchema = joi.object({
+    picture: joi.string().required()
+});

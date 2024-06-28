@@ -1,12 +1,14 @@
-import { Box, Button, Flex, HStack, Stack, useColorMode } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, Flex, HStack, Stack, useColorMode, Image } from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp, IoIosMoon, IoIosSunny } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { UserProfileContext } from "../context/UserProfileContext";
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { profile } = useContext(UserProfileContext);
     const { toggleColorMode, colorMode } = useColorMode();
     const { get, remove } = useLocalStorage();
     const { pathname } = useLocation();
@@ -29,8 +31,9 @@ export function Header() {
                 {pathname === "/" && <Button variant='ghost' onClick={() => navigate('/sign-up')}>Cadastre-se</Button>}
                 {pathname.includes('sign-up') && <Button variant='ghost' onClick={() => navigate('/')}>Entrar</Button>}
                 {get('access_token') && <>
-                    <Flex alignItems='center' justifyContent='center' w='50px' h='50px' borderRadius='50%' bgColor='grey'>
-                        <FaRegUser size={25} />
+                    <Flex alignItems='center' justifyContent='center' w='50px' h='50px' borderRadius='50%' bgColor='grey' overflow='hidden'>
+                        {profile.picture && <Image objectFit='cover' w='100%' h='100%' src={profile.picture} />}
+                        {!profile.picture && <FaRegUser size={25} />}
                     </Flex>
                     <IoIosArrowDown size={23} className="arrow-menu" cursor='pointer' onClick={() => setIsMenuOpen(!isMenuOpen)} />
                     {isMenuOpen && <Stack pos='absolute' left='-10px' top='90%' p='5px' bgColor='lightgrey' spacing={5} borderRadius='10px'>

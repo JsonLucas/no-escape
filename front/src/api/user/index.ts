@@ -20,3 +20,8 @@ export const updateUserProfileRequest = async (body: IUser) => {
     const { data } = await api.put('/users', body);
     return data;
 }
+
+export const updateUserProfilePictureRequest = async (picture: string | ArrayBuffer) => {
+    const { data } = await api.patch('/users/picture', { picture }, { headers: { 'content-type': 'multipart/form-data' } });
+    return data;
+}

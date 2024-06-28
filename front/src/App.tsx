@@ -4,18 +4,21 @@ import { Home } from './pages/Home'
 import { SignUp } from './pages/SignUp'
 import { NotFound } from './pages/NotFound'
 import { Profile } from './pages/Profile'
+import { UserProfileContextComponent } from './context/UserProfileContext'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Login />} /> 
-        <Route path='/sign-up' element={<SignUp />} />
-        <Route path='/home' element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <UserProfileContextComponent>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Login />} />
+          <Route path='/sign-up' element={<SignUp />} />
+          <Route path='/home' element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </UserProfileContextComponent>
   )
 }
 

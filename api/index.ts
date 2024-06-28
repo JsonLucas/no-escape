@@ -27,10 +27,14 @@ import { RemoveTrackingUsecase } from "./src/usecases/tracking/remove-tracking.u
 import { GetTrackingByIdRoute } from "./src/infra/api/express/routes/tracking/get-tracking-by-id.express.route";
 import { UpdateTrackingRoute } from "./src/infra/api/express/routes/tracking/update-tracking.express.route";
 import { RemoveTrackingRoute } from "./src/infra/api/express/routes/tracking/remove-tracking.express.route";
+import { UpdateUserPictureRoute } from "./src/infra/api/express/routes/user/update-user-picture.express.route";
+import { UpdateUserPictureUsecase } from "./src/usecases/user/update-user-picture.usecase";
+import { Upload } from "./src/helpers/Upload";
 
 (() => {
     const validator = Validator.create();
     const crypto = Crypto.create();
+    const upload = Upload.create();
 
     const userRepository = UserRepositoryPrisma.create(prisma);
     const sessionRepository = SessionRepositoryPrisma.create(prisma);
@@ -40,6 +44,7 @@ import { RemoveTrackingRoute } from "./src/infra/api/express/routes/tracking/rem
     const getUserByEmailUsecase = GetUserByEmailUsecase.create(userRepository);
     const getUserByIdUsecase = GetUserByIdUsecase.create(userRepository);
     const updateUserProfileUsecase = UpdateUserProfileUsecase.create(userRepository);
+    const updateUserPictureUsecase = UpdateUserPictureUsecase.create(userRepository);
 
     const createSessionUsecase = CreateSessionUsecase.create(sessionRepository);
     const getSessionByIdUsecase = GetSessionByIdUsecase.create(sessionRepository);
@@ -55,6 +60,7 @@ import { RemoveTrackingRoute } from "./src/infra/api/express/routes/tracking/rem
     const loginRoute = UserLoginRoute.create(getUserByEmailUsecase, createSessionUsecase, validator, crypto);
     const userProfile = UserProfileRoute.create(getUserByIdUsecase, getSessionByIdUsecase);
     const upateUserProfileRoute = UpdateUserProfileRoute.create(updateUserProfileUsecase, getSessionByIdUsecase, validator, crypto);
+    const updateUserPictureRoute = UpdateUserPictureRoute.create(updateUserPictureUsecase, getSessionByIdUsecase, validator, upload);
 
     const createTrackingRoute = CreateTrackingRoute.create(createTrackingUsecase, getSessionByIdUsecase, validator);
     const getTrackingByIdRoute = GetTrackingByIdRoute.create(getTrackingByIdUsecase, getSessionByIdUsecase);
@@ -67,6 +73,7 @@ import { RemoveTrackingRoute } from "./src/infra/api/express/routes/tracking/rem
         loginRoute, 
         userProfile,
         upateUserProfileRoute,
+        updateUserPictureRoute,
         
         createTrackingRoute,
         getTrackingByIdRoute,
