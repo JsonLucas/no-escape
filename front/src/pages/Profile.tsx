@@ -1,4 +1,4 @@
-import { Flex, Box, Stack, Text, HStack, Button } from "@chakra-ui/react";
+import { Flex, Box, Stack, Text, HStack, Button, Spinner } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { Header } from "../components/Header";
 import { Field } from "../components/Field";
@@ -7,21 +7,28 @@ import { FaRegUser } from "react-icons/fa";
 import { CiMail } from "react-icons/ci";
 import { MdLockOutline, MdOutlineLockPerson, MdOutlinePhone } from "react-icons/md";
 import { IoPencil, IoCameraOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema } from "../utils/schemas";
+import { updateProfileSchema } from "../utils/schemas";
+import { useProfile } from "../hooks/useProfile";
 
 export function Profile() {
-    const { register, handleSubmit } = useForm({ resolver: zodResolver(signUpSchema) });
+    const { profile, update } = useProfile();
+    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ resolver: zodResolver(updateProfileSchema) });
     const [isEnabled, setIsEnabled] = useState(false);
 
-    const updateData = async (data: any) => {
+    const updateProfile = async (data: any) => {
         try {
             console.log(data);
+            await update({ ...data, id: profile.data.id });
         } catch (e: any) {
             console.log(e);
         }
     }
+
+    useEffect(() => {
+        console.log(errors);
+    }, [errors]);
 
     return (
         <Container classList={['flex', 'flex-column', 'align-items-center']}>
@@ -44,62 +51,53 @@ export function Profile() {
                     </Flex>
                 </Stack>
                 <Stack justifyContent='center' w='55%'>
-                    <Field
-                        name='name'
-                        placeholder='Name. . .'
-                        register={register}
-                        variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <FaRegUser />
-                        }}
-                        options={{ disabled: !isEnabled }}
-                    />
-                    <Field
-                        name='email'
-                        placeholder='Email. . .'
-                        register={register}
-                        variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <CiMail />
-                        }}
-                        options={{ disabled: true }}
-                    />
-                    <Field
-                        name='phone'
-                        placeholder='Phone. . .'
-                        register={register}
-                        variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <MdOutlinePhone />
-                        }}
-                        options={{ disabled: true }}
-                    />
-                    <Field
-                        name='password'
-                        placeholder='Password. . .'
-                        register={register}
-                        variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <MdLockOutline />
-                        }}
-                        options={{ disabled: !isEnabled }}
-                    />
-                    {isEnabled && <>
+                    {profile.isLoading && <Spinner />}
+                    {profile.data && <>
                         <Field
-                            name='confirmPassword'
-                            placeholder='Confirm Password. . .'
+                            name='name'
+                            placeholder='Name. . .'
                             register={register}
                             variant='flushed'
-                            addOn={{
-                                orientation: 'left',
-                                component: <MdOutlineLockPerson />
-                            }}
+                            defaultValue={profile.data.name}
+                            leftAddOn={<FaRegUser />}
+                            options={{ disabled: !isEnabled }}
                         />
-                        <Button mt='10px' variant='outline' onClick={handleSubmit(updateData)}>Atualizar Dados</Button>
+                        <Field
+                            name='email'
+                            placeholder='Email. . .'
+                            register={register}
+                            variant='flushed'
+                            defaultValue={profile.data.email}
+                            leftAddOn={<CiMail />}
+                            readOnly={true}
+                        />
+                        <Field
+                            name='phone'
+                            placeholder='Phone. . .'
+                            register={register}
+                            defaultValue={profile.data.phone}
+                            variant='flushed'
+                            leftAddOn={<MdOutlinePhone />}
+                            readOnly={true}
+                        />
+                        {isEnabled && <>
+                            <Field
+                                name='password'
+                                placeholder='Password. . .'
+                                register={register}
+                                variant='flushed'
+                                leftAddOn={<MdLockOutline />}
+                                options={{ disabled: !isEnabled }}
+                            />
+                            <Field
+                                name='confirmPassword'
+                                placeholder='Confirm Password. . .'
+                                register={register}
+                                variant='flushed'
+                                leftAddOn={<MdOutlineLockPerson />}
+                            />
+                            <Button mt='10px' variant='outline' onClick={handleSubmit(updateProfile)}>Atualizar Dados</Button>
+                        </>}
                     </>}
                 </Stack>
             </Flex>

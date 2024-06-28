@@ -7,32 +7,32 @@ interface Props {
     placeholder: string,
     register: UseFormRegister<any>,
     type?: HTMLInputTypeAttribute,
-    addOn?: {
-        component: ReactNode,
-        orientation: 'left' | 'right'
-    }
+    leftAddOn?: ReactNode,
+    rightAddOn?: ReactNode,
     variant?: ResponsiveValue<string>
     options?: RegisterOptions<FieldValues, string>
     isTextArea?: boolean,
-    style?: CSSProperties
+    style?: CSSProperties,
+    defaultValue?: string,
+    readOnly?: boolean
 }
 
-export function Field({ name, placeholder, addOn, register, options, style, type = "text", variant='outline', isTextArea = false }: Props) {
+export function Field({ name, placeholder, leftAddOn, rightAddOn, register, options, style, type = "text", variant='outline', isTextArea = false, defaultValue = '', readOnly = false }: Props) {
     return (
         <InputGroup>
-            {addOn && addOn.orientation === 'left' &&
+            {leftAddOn &&
                 <InputLeftElement pointerEvents='none'>
-                    {addOn?.component}
+                    {leftAddOn}
                 </InputLeftElement>
             }
 
-            {!isTextArea && <Input {...register(name, options)} placeholder={placeholder} type={type} variant={variant} />}
-            {isTextArea && <Textarea style={style} {...register(name, options)} placeholder={placeholder} resize='none' rows={4} /> }
+            {!isTextArea && <Input {...register(name, { ...options })} defaultValue={defaultValue} placeholder={placeholder} type={type} variant={variant} readOnly={readOnly} />}
+            {isTextArea && <Textarea style={style} {...register(name, options)} defaultValue={defaultValue} placeholder={placeholder} resize='none' rows={4} readOnly={readOnly} /> }
 
-            {addOn && addOn.orientation === 'right' &&
+            {rightAddOn &&
                 <InputRightElement pointerEvents='none'>
-                    {addOn?.component}
-                    <Input {...register(name)} placeholder={placeholder} type={type} />
+                    {rightAddOn}
+                    <Input {...register(name, options)} placeholder={placeholder} defaultValue={defaultValue} type={type} readOnly={readOnly} />
                 </InputRightElement>
             }
         </InputGroup>

@@ -5,31 +5,38 @@ import { Container } from "../components/Container";
 import { CiMail } from "react-icons/ci";
 import { MdLockOutline } from "react-icons/md";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signUpSchema } from "../utils/schemas";
+import { loginSchema } from "../utils/schemas";
+import { loginRequest } from "../api/user";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
+import { Header } from "../components/Header";
 
 export function Login() {
-    const { register, handleSubmit } = useForm({ resolver: zodResolver(signUpSchema)});
+    const { register, handleSubmit } = useForm({ resolver: zodResolver(loginSchema)});
+    const { add } = useLocalStorage();
+    const navigate = useNavigate();
 
-    const signUp = async (data: any) => {
+    const login = async (data: any) => {
         try {
-            console.log(data);
+            // console.log(data);
+            const response = await loginRequest(data);
+            add('access_token', response.session);
+            navigate('/home');
         } catch (e: any) {
             console.log(e);
         }
     }
 
     return (
-        <Container classList={['align-items-center', 'justify-content-center', 'flex']}>
-            <Stack borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
+        <Container>
+            <Header /> 
+            <Stack m='10% auto' borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
                 <Field
                     name='email'
                     placeholder='Email. . .'
                     register={register}
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <CiMail />
-                    }}
+                    leftAddOn={<CiMail />}
                 />
                 <Field
                     name='password'
@@ -37,12 +44,9 @@ export function Login() {
                     register={register}
                     type='password'
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <MdLockOutline />
-                    }}
+                    leftAddOn={<MdLockOutline />}
                 />
-                <Button onClick={handleSubmit(signUp)} mt='20px' colorScheme='green.300' variant='outline'>
+                <Button onClick={handleSubmit(login)} mt='20px' colorScheme='green.300' variant='outline'>
                     Entrar
                 </Button>
             </Stack>

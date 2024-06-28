@@ -8,72 +8,74 @@ import { MdOutlinePhone } from "react-icons/md";
 import { MdLockOutline, MdOutlineLockPerson } from "react-icons/md";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signUpSchema } from "../utils/schemas";
+import { Header } from "../components/Header";
+import { FormError } from "../components/FormError";
+import { signUpRequest } from "../api/user";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 export function SignUp() {
-    const { register, handleSubmit } = useForm({ resolver: zodResolver(signUpSchema)});
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(signUpSchema)});
+    const { add } = useLocalStorage();
+    const navigate = useNavigate();
 
     const signUp = async (data: any) => {
         try {
-            console.log(data);
+            const response = await signUpRequest(data);
+            add('access_token', response.session);
+            navigate('/home')
         } catch (e: any) {
             console.log(e);
         }
     }
 
     return (
-        <Container classList={['align-items-center', 'justify-content-center', 'flex']}>
-            <Stack borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
+        <Container>
+            <Header />
+            <Stack m='5% auto' borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
                 <Field
                     name='name'
                     placeholder='Name. . .'
                     register={register}
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <FaRegUser />
-                    }}
+                    leftAddOn={<FaRegUser />}
                 />
+                {errors.name && <FormError error={errors.name.message?.toString() ?? ""} />}
                 <Field
                     name='email'
                     placeholder='Email. . .'
                     register={register}
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <CiMail />
-                    }}
+                    leftAddOn={<CiMail />}
                 />
+                {errors.email && <FormError error={errors.email.message?.toString() ?? ""} />}
                 <Field
                     name='phone'
                     placeholder='Phone. . .'
                     register={register}
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <MdOutlinePhone />
-                    }}
+                    leftAddOn={<MdOutlinePhone />}
                 />
+                {errors.phone && <FormError error={errors.phone.message?.toString() ?? ""} />}
                 <Field
                     name='password'
                     placeholder='Password. . .'
                     register={register}
+                    type="password"
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <MdLockOutline />
-                    }}
+                    leftAddOn={<MdLockOutline />}
                 />
+                {errors.password && <FormError error={errors.password.message?.toString() ?? ""} />}
                 <Field
                     name='confirmPassword'
                     placeholder='Confirm Password. . .'
                     register={register}
                     variant='flushed'
-                    addOn={{
-                        orientation: 'left',
-                        component: <MdOutlineLockPerson />
-                    }}
+                    type="password"
+                    leftAddOn={<MdOutlineLockPerson />}
                 />
-                <Button onClick={handleSubmit(signUp)} mt='20px' colorScheme='green.300' variant='outline'>
+                {errors.confirmPassword && <FormError error={errors.confirmPassword.message?.toString() ?? ""} />}
+                <Button isLoading={isSubmitting} loadingText='Enviando...' onClick={handleSubmit(signUp)} mt='20px' colorScheme='green.300' variant='outline'>
                     Sign Up
                 </Button>
             </Stack>

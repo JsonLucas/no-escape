@@ -7,7 +7,7 @@ import { UNSUPPORTED_OBJECT, USER_NOT_FOUND } from "../../../../../utils/httpRes
 import { UpdateUserProfileUsecase } from "../../../../../usecases/user/update-user-profile.usecase";
 import { GetSessionByIdUsecase } from "../../../../../usecases/session/get-session-by-id.usecase";
 
-export class UserLoginRoute implements IRoute {
+export class UpdateUserProfileRoute implements IRoute {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
@@ -18,7 +18,7 @@ export class UserLoginRoute implements IRoute {
     ) {}
 
     public static create(updateUserProfileService: UpdateUserProfileUsecase, getSessionService: GetSessionByIdUsecase, validator: Validator, crypto: Crypto) {
-        return new UserLoginRoute(
+        return new UpdateUserProfileRoute(
             "/users",
             HttpMethod.PUT,
             updateUserProfileService,
@@ -41,9 +41,9 @@ export class UserLoginRoute implements IRoute {
             if(!session.userId) return res.status(404).send({ message: 'Session not found.' });
 
             const { password } = body;
-            const encryptedPassword = this.crypto.encrypt(password);
+            const encryptedPassword = password.length > 0 ? this.crypto.encrypt(password) : '';
 
-            const user = { ...body, password: encryptedPassword };
+            const user = { ...body, id: session.userId, password: encryptedPassword };
             await this.updateUserProfileService.execute(user);
 
             res.status(200).send({ message: 'User successfuly updated!' });

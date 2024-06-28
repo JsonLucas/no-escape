@@ -12,6 +12,21 @@ import { CreateSessionUsecase } from "./src/usecases/session/create-session.usec
 import { SessionRepositoryPrisma } from "./src/infra/repositories/session/session.repository.prisma";
 import { GetSessionByIdUsecase } from "./src/usecases/session/get-session-by-id.usecase";
 import { RemoveSessionUsecase } from "./src/usecases/session/remove-session.usecase";
+import { UpdateUserProfileUsecase } from "./src/usecases/user/update-user-profile.usecase";
+import { UpdateUserProfileRoute } from "./src/infra/api/express/routes/user/update-user-profile.express.route";
+import { GetUserByIdUsecase } from "./src/usecases/user/get-user-by-id.usecase";
+import { UserProfileRoute } from "./src/infra/api/express/routes/user/get-user-profile.express.route";
+import { CreateTrackingUsecase } from "./src/usecases/tracking/create-tracking.usecase";
+import { TrackingRepositoryPrisma } from "./src/infra/repositories/tracking/tracking.repository.prisma";
+import { CreateTrackingRoute } from "./src/infra/api/express/routes/tracking/create-tracking.express.route";
+import { GetTrackingsByUserIdRoute } from "./src/infra/api/express/routes/tracking/get-all-user-trackings.express.route";
+import { GetAllTrackingsUsecase } from "./src/usecases/tracking/get-all-trackings.usecase";
+import { GetTrackingByIdUsecase } from "./src/usecases/tracking/get-tracking-by-id";
+import { UpdateTrackingUsecase } from "./src/usecases/tracking/update-tracking.usecase";
+import { RemoveTrackingUsecase } from "./src/usecases/tracking/remove-tracking.usecase";
+import { GetTrackingByIdRoute } from "./src/infra/api/express/routes/tracking/get-tracking-by-id.express.route";
+import { UpdateTrackingRoute } from "./src/infra/api/express/routes/tracking/update-tracking.express.route";
+import { RemoveTrackingRoute } from "./src/infra/api/express/routes/tracking/remove-tracking.express.route";
 
 (() => {
     const validator = Validator.create();
@@ -19,17 +34,45 @@ import { RemoveSessionUsecase } from "./src/usecases/session/remove-session.usec
 
     const userRepository = UserRepositoryPrisma.create(prisma);
     const sessionRepository = SessionRepositoryPrisma.create(prisma);
+    const trackingRepository = TrackingRepositoryPrisma.create(prisma);
 
     const createUserUsecase = CreateUserUsecase.create(userRepository);
     const getUserByEmailUsecase = GetUserByEmailUsecase.create(userRepository);
+    const getUserByIdUsecase = GetUserByIdUsecase.create(userRepository);
+    const updateUserProfileUsecase = UpdateUserProfileUsecase.create(userRepository);
 
     const createSessionUsecase = CreateSessionUsecase.create(sessionRepository);
-    const getSesionByIdUsecase = GetSessionByIdUsecase.create(sessionRepository);
+    const getSessionByIdUsecase = GetSessionByIdUsecase.create(sessionRepository);
     const removeSessionUsecase = RemoveSessionUsecase.create(sessionRepository);
+
+    const createTrackingUsecase = CreateTrackingUsecase.create(trackingRepository);
+    const getAllTrackingsUsecase = GetAllTrackingsUsecase.create(trackingRepository);
+    const getTrackingByIdUsecase = GetTrackingByIdUsecase.create(trackingRepository);
+    const updateTrackingUsecase = UpdateTrackingUsecase.create(trackingRepository);
+    const removeTrackingUsecase = RemoveTrackingUsecase.create(trackingRepository);
 
     const createUserRoute = CreateUserRoute.create(createUserUsecase, createSessionUsecase, validator, crypto);
     const loginRoute = UserLoginRoute.create(getUserByEmailUsecase, createSessionUsecase, validator, crypto);
+    const userProfile = UserProfileRoute.create(getUserByIdUsecase, getSessionByIdUsecase);
+    const upateUserProfileRoute = UpdateUserProfileRoute.create(updateUserProfileUsecase, getSessionByIdUsecase, validator, crypto);
 
-    const api = ApiExpress.create([createUserRoute, loginRoute]);
+    const createTrackingRoute = CreateTrackingRoute.create(createTrackingUsecase, getSessionByIdUsecase, validator);
+    const getTrackingByIdRoute = GetTrackingByIdRoute.create(getTrackingByIdUsecase, getSessionByIdUsecase);
+    const getAllTrackingsRoute = GetTrackingsByUserIdRoute.create(getAllTrackingsUsecase, getSessionByIdUsecase);
+    const updateTrackingRoute = UpdateTrackingRoute.create(updateTrackingUsecase, getSessionByIdUsecase, validator);
+    const removeTrackingRoute = RemoveTrackingRoute.create(removeTrackingUsecase, getSessionByIdUsecase);
+
+    const api = ApiExpress.create([
+        createUserRoute, 
+        loginRoute, 
+        userProfile,
+        upateUserProfileRoute,
+        
+        createTrackingRoute,
+        getTrackingByIdRoute,
+        getAllTrackingsRoute,
+        updateTrackingRoute,
+        removeTrackingRoute
+    ]);
     api.start(port);
 })();

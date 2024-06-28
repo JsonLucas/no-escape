@@ -6,7 +6,8 @@ export const createUserSchema = joi.object({
     name: joi.string().required(),
     email: joi.string().email(),
     phone: joi.string().required(),
-    password: joi.string().regex(passwordRegex).required()
+    password: joi.string().regex(passwordRegex).required(),
+    confirmPassword: joi.ref('password')
 });
 
 export const loginSchema = joi.object({
@@ -17,10 +18,13 @@ export const loginSchema = joi.object({
 export const trackingSchema = joi.object({
     vehicleName: joi.string().required().max(50),
     vehiclePlate: joi.string().required().max(8),
-    description: joi.string().max(100)
+    description: joi.string().min(0).max(100)
 });
 
-export const updateUserSchema = { 
-    ...createUserSchema, 
-    picture: joi.string().base64() 
-};
+export const updateUserSchema = joi.object({
+    name: joi.string().required(),
+    email: joi.string().email(),
+    phone: joi.string().required(),
+    password: joi.string().allow('').optional().regex(passwordRegex),
+    confirmPassword: joi.string().allow('').optional().valid(joi.ref('password'))
+});

@@ -10,3 +10,4 @@ export interface IUser {
 export type UserInputDTO = Omit<IUser, 'id' | 'picture'>;
 export type UserOutputDTO = Pick<IUser, 'id'>;
 export type LoginInputDTO = Pick<UserInputDTO, 'email'>;
+export type GetUserProfileByIdInputDTO = Pick<IUser, 'id'>;

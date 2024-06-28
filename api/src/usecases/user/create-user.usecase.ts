@@ -13,9 +13,9 @@ export class CreateUserUsecase implements UseCase<UserInputDTO, UserOutputDTO> {
     public async execute(userDTO: UserInputDTO): Promise<UserOutputDTO> {
         const user = User.create({ ...userDTO, id: 0 });
         
-        await this.userGateway.save(user);
+        const createdUser = await this.userGateway.save(user);
 
-        const output = this.presentOutput(user);
+        const output = this.presentOutput(createdUser);
         return output;
     }
 

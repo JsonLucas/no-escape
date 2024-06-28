@@ -6,7 +6,7 @@ import { trackingSchema } from "../../../../../utils/schema";
 import { UNSUPPORTED_OBJECT } from "../../../../../utils/httpResponse";
 import { UpdateTrackingUsecase } from "../../../../../usecases/tracking/update-tracking.usecase";
 
-export class GetTrackingByIdRoute implements IRoute {
+export class UpdateTrackingRoute implements IRoute {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
@@ -16,7 +16,7 @@ export class GetTrackingByIdRoute implements IRoute {
     ) {}
 
     public static create(updateTrackingService: UpdateTrackingUsecase, getSessionService: GetSessionByIdUsecase, validator: Validator) {
-        return new GetTrackingByIdRoute(
+        return new UpdateTrackingRoute(
             "/tracking/:id",
             HttpMethod.PUT,
             updateTrackingService,
@@ -37,7 +37,7 @@ export class GetTrackingByIdRoute implements IRoute {
             const session = await this.getSessionService.execute({ id: sessionId.toString() });
             if(!session.userId) return res.status(404).send({ message: 'Session not found.' });
 
-            if(!params.id || (params.id && Number(params.id))) return res.status(400).send({ message: 'You must to provide a valid tracking id.' });
+            if(!params.id || (params.id && isNaN(Number(params.id)))) return res.status(400).send({ message: 'You must to provide a valid tracking id.' });
 
             await this.updateTrackingService.execute({ ...body, id: Number(params.id) });
 

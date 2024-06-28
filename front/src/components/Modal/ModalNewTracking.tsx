@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import { Text, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { Field } from "../Field";
 import { useForm } from "react-hook-form";
 import { IoCarOutline } from "react-icons/io5";
@@ -6,6 +6,8 @@ import { BsCreditCard2Front } from "react-icons/bs";
 import { Track } from "../../interfaces/Track";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trackingSchema } from "../../utils/schemas";
+import { useTracking } from "../../hooks/useTracking";
+import { FormError } from "../FormError";
 
 interface Props {
     isOpen: boolean,
@@ -13,10 +15,21 @@ interface Props {
 }
 
 export function ModalNewTracking({ isOpen, onClose }: Props) {
-    const { register, handleSubmit, reset } = useForm({ defaultValues: {} as Track, resolver: zodResolver(trackingSchema) });
+    const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm({
+        defaultValues: {
+            vehicleName: '',
+            vehiclePlate: '',
+            description: ''
+        },
+        resolver: zodResolver(trackingSchema)
+    });
+    const { createTracking } = useTracking();
+    const descriptionField = watch('description');
     const saveTrack = async (data: any) => {
         try {
-            console.log(data);
+            await createTracking(data);
+            reset();
+            onClose();
         } catch (e: any) {
             console.log(e);
         }
@@ -39,21 +52,17 @@ export function ModalNewTracking({ isOpen, onClose }: Props) {
                         placeholder='Veículo. . .'
                         register={register}
                         variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <IoCarOutline />
-                        }}
+                        leftAddOn={<IoCarOutline />}
                     />
+                    {errors.vehicleName && <FormError error={errors.vehicleName.message?.toString() ?? ""} />}
                     <Field
                         name='vehiclePlate'
                         placeholder='Placa do veículo. . .'
                         register={register}
                         variant='flushed'
-                        addOn={{
-                            orientation: 'left',
-                            component: <BsCreditCard2Front />
-                        }}
+                        leftAddOn={<BsCreditCard2Front />}
                     />
+                    {errors.vehiclePlate && <FormError error={errors.vehiclePlate.message?.toString() ?? ""} />}
                     <Field
                         name='description'
                         placeholder='Descrição. . .'
@@ -61,10 +70,14 @@ export function ModalNewTracking({ isOpen, onClose }: Props) {
                         isTextArea={true}
                         style={{ marginTop: '15px' }}
                     />
+                    <Text w='100%' textAlign='right' color={descriptionField.length > 100 ? 'red.300' : 'auto'}>
+                        {descriptionField.length}/100 catacteres
+                    </Text>
+                    {errors.description && <FormError error={errors.description.message?.toString() ?? ""} />}
                 </ModalBody>
                 <ModalFooter>
                     <Button variant='ghost' onClick={onCancel}>Cancelar</Button>
-                    <Button variant='outline' ml='5px' onClick={handleSubmit(saveTrack)}>Salvar</Button>
+                    <Button isLoading={isSubmitting} loadingText='Carregando. . .' variant='outline' ml='5px' onClick={handleSubmit(saveTrack)}>Salvar</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

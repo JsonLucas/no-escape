@@ -10,14 +10,19 @@ export class UserRepositoryPrisma implements UserGateway {
         return new UserRepositoryPrisma(prisma);
     }
 
-    public async save(user: User): Promise<void> {
+    public async save(user: User): Promise<User> {
         const { name, email, phone, password } = user;
-        await this.prisma.users.create({ data: { name, email, phone, password } });
+        const createdUser = await this.prisma.users.create({ data: { name, email, phone, password } });
+        
+        return User.with(createdUser);
     }
 
-    public async update(user: User): Promise<void> {
-        const { name, password, picture, id } = user;
-        await this.prisma.users.update({ data: { name, password, picture }, where: { id } })
+    public async update(user: User): Promise<User> {
+        const { name, password, id } = user;
+        const data = password.length > 0 ? { name, password } : { name };
+        const updated = await this.prisma.users.update({ data, where: { id } });
+
+        return User.with(updated);
     }
 
     public async getById(id: number): Promise<User> {

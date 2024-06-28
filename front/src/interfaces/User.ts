@@ -8,3 +8,4 @@ export interface IUser {
 
 export type Login = Pick<IUser, 'email' | 'password'>;
 export type SignUp = Omit<IUser, 'picture'>;
+export type Profile = Omit<IUser, 'password' | 'picture'>;
