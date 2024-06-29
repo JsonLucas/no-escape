@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export function NotFound() {
     const navigate = useNavigate();
     return (
-        <Container classList={['flex-column', 'center']}>
+        <Container classList={['flex', 'flex-column', 'justify-content-center', 'align-items-center']}>
             <Text>Página não encontrada.</Text>
             <Text fontSize='22px' onClick={() => navigate('/')} cursor='pointer'>Voltar para a página inical.</Text>
         </Container>

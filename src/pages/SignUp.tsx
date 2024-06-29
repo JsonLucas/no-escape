@@ -13,16 +13,19 @@ import { FormError } from "../components/FormError";
 import { signUpRequest } from "../api/user";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export function SignUp() {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(signUpSchema)});
     const { add } = useLocalStorage();
+    const { setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     const signUp = async (data: any) => {
         try {
             const response = await signUpRequest(data);
             add('access_token', response.session);
+            setIsAuthenticated(true);
             navigate('/home')
         } catch (e: any) {
             console.log(e);

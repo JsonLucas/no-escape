@@ -14,7 +14,7 @@ import { useProfile } from "../hooks/useProfile";
 import { MdOutlineCancel } from "react-icons/md";
 import { useDropzone } from "react-dropzone";
 import { MdOutlineCheck } from "react-icons/md";
-import { UserProfileContext } from "../context/UserProfileContext";
+import { useUserProfileContext } from "../context/UserProfileContext";
 
 type PreviewImage = {
     localUrl: string,
@@ -24,7 +24,7 @@ type PreviewImage = {
 export function Profile() {
     const { profile, update, updateProfilePicture } = useProfile();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: zodResolver(updateProfileSchema) });
-    const { setProfile } = useContext(UserProfileContext);
+    const { setProfile } = useUserProfileContext();
     const [isEnabled, setIsEnabled] = useState(false);
     const [image, setImage] = useState({} as PreviewImage);
     const onDrop = useCallback((acceptedFiles: File[]) => {

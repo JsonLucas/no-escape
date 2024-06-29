@@ -1,14 +1,14 @@
 import { Box, Button, Flex, HStack, Stack, useColorMode, Image } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FaRegUser } from "react-icons/fa";
-import { IoIosArrowDown, IoIosArrowUp, IoIosMoon, IoIosSunny } from "react-icons/io";
+import { IoIosArrowDown, IoIosMoon, IoIosSunny } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { UserProfileContext } from "../context/UserProfileContext";
+import { useUserProfileContext } from "../context/UserProfileContext";
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { profile } = useContext(UserProfileContext);
+    const { profile } = useUserProfileContext();
     const { toggleColorMode, colorMode } = useColorMode();
     const { get, remove } = useLocalStorage();
     const { pathname } = useLocation();

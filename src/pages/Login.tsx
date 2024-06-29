@@ -10,10 +10,12 @@ import { loginRequest } from "../api/user";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../components/Header";
+import { useAuth } from "../context/AuthContext";
 
 export function Login() {
     const { register, handleSubmit } = useForm({ resolver: zodResolver(loginSchema)});
     const { add } = useLocalStorage();
+    const { setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     const login = async (data: any) => {
@@ -21,6 +23,7 @@ export function Login() {
             // console.log(data);
             const response = await loginRequest(data);
             add('access_token', response.session);
+            setIsAuthenticated(true);
             navigate('/home');
         } catch (e: any) {
             console.log(e);
