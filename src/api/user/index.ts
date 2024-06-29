@@ -11,6 +11,11 @@ export const loginRequest = async (body: Login) => {
     return data;
 }
 
+export const logoutRequest = async () => {
+    const { data } = await api.delete('/users/logout');
+    return data;
+}
+
 export const getUserProfileRequest = async () => {
     const { data } = await api.get('/users');
     return data;

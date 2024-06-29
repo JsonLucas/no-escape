@@ -1,20 +1,19 @@
-import { Flex, Box, Stack, Text, HStack, Button, Spinner, Image } from "@chakra-ui/react";
+import { Flex, Box, Stack, Text, HStack, Button, Image, Spinner } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { Header } from "../components/Header";
 import { Field } from "../components/Field";
 import { useForm } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { CiMail } from "react-icons/ci";
-import { MdLockOutline, MdOutlineLockPerson, MdOutlinePhone } from "react-icons/md";
+import { MdLockOutline, MdOutlineLockPerson, MdOutlinePhone, MdOutlineCancel, MdOutlineCheck } from "react-icons/md";
 import { IoPencil, IoCameraOutline } from "react-icons/io5";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateProfileSchema } from "../utils/schemas";
 import { useProfile } from "../hooks/useProfile";
-import { MdOutlineCancel } from "react-icons/md";
 import { useDropzone } from "react-dropzone";
-import { MdOutlineCheck } from "react-icons/md";
 import { useUserProfileContext } from "../context/UserProfileContext";
+import { FormError } from "../components/FormError";
 
 type PreviewImage = {
     localUrl: string,
@@ -22,9 +21,9 @@ type PreviewImage = {
 }
 
 export function Profile() {
-    const { profile, update, updateProfilePicture } = useProfile();
+    const { profile } = useUserProfileContext();
+    const { update, updateProfilePicture } = useProfile();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: zodResolver(updateProfileSchema) });
-    const { setProfile } = useUserProfileContext();
     const [isEnabled, setIsEnabled] = useState(false);
     const [image, setImage] = useState({} as PreviewImage);
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -71,49 +70,66 @@ export function Profile() {
         }
     }
 
-    useEffect(() => {
-        if(profile.data) setProfile(profile.data);
-    }, [profile.data]);
-
     return (
         <Container classList={['flex', 'flex-column', 'align-items-center']}>
             <Header />
-            <Flex w='50%' m='5% auto' justifyContent='space-between'>
+            <Flex
+                w={['90%', '75%', '65%', '50%']}
+                direction={['column', 'column', 'column', 'row']}
+                m='5% auto'
+                justifyContent='space-between'
+            >
                 <Stack>
-                    <Box h='20rem' w='20rem' borderRadius='50%' bgColor='white' position='relative' overflow='hidden'>
-                        <Image 
-                            objectFit='cover' 
-                            w='100%' 
-                            h='100%' 
-                            src={image?.localUrl || (profile.data && profile.data.picture) || "" } 
+                    <Box
+                        m={['auto', 'auto', 'auto', 'unset']}
+                        h={['10rem', '12rem', '16rem', '20rem']}
+                        w={['10rem', '12rem', '16rem', '20rem']}
+                        borderRadius='50%'
+                        bgColor='white'
+                        overflow='hidden'
+                    >
+                        <Image
+                            objectFit='cover'
+                            w='100%'
+                            h='100%'
+                            src={image?.localUrl || (profile.data && profile.data.picture) || ""}
                         />
                     </Box>
                     <Stack m='auto' justifyContent='center'>
-                        <Flex cursor='pointer'   {...getRootProps()}>
-                            <IoCameraOutline size={22} style={{ marginRight: '5px' }} />
-                            <Text>Alterar foto</Text>
-                            <input {...getInputProps()} multiple={false} />
-                        </Flex>
-                        {acceptedFiles.length > 0 && Object.keys(image).length > 0 &&
-                            <Flex cursor='pointer' onClick={updatePicture}>
-                                <MdOutlineCheck size={22} style={{ marginRight: '5px' }} />
-                                <Text>Confirmar</Text>
+                        {Object.keys(image).length === 0 && <>
+                            <Flex cursor='pointer'   {...getRootProps()}>
+                                <IoCameraOutline size={22} style={{ marginRight: '5px' }} />
+                                <Text>Alterar foto</Text>
+                                <input {...getInputProps()} multiple={false} />
                             </Flex>
+                        </>}
+                        {acceptedFiles.length > 0 && Object.keys(image).length > 0 &&
+                            <Stack>
+                                <Flex cursor='pointer' onClick={updatePicture}>
+                                    <MdOutlineCheck size={22} style={{ marginRight: '5px' }} />
+                                    <Text>Confirmar</Text>
+                                </Flex>
+                                <Flex cursor='pointer' onClick={() => setImage({} as PreviewImage)}>
+                                    <MdOutlineCancel size={22} style={{ marginRight: '5px' }} />
+                                    <Text>Cancelar</Text>
+                                </Flex>
+                            </Stack>
                         }
                     </Stack>
                 </Stack>
-                <Stack justifyContent='center' w='55%'>
+                <Stack justifyContent='center' w={['100%', '100%', '100%', '55%']}>
                     {profile.isLoading && <Spinner />}
                     {profile.data && <>
                         <Field
                             name='name'
                             placeholder='Name. . .'
                             register={register}
-                            variant='flushed'
                             defaultValue={profile.data.name}
+                            variant='flushed'
                             leftAddOn={<FaRegUser />}
                             options={{ disabled: !isEnabled }}
                         />
+                        {errors.name && <FormError error={errors.name.message?.toString() ?? ""} />}
                         <Field
                             name='email'
                             placeholder='Email. . .'
@@ -123,6 +139,7 @@ export function Profile() {
                             leftAddOn={<CiMail />}
                             readOnly={true}
                         />
+                        {errors.email && <FormError error={errors.email.message?.toString() ?? ""} />}
                         <Field
                             name='phone'
                             placeholder='Phone. . .'
@@ -132,6 +149,7 @@ export function Profile() {
                             leftAddOn={<MdOutlinePhone />}
                             readOnly={true}
                         />
+                        {errors.phone && <FormError error={errors.phone.message?.toString() ?? ""} />}
                         {isEnabled && <>
                             <Field
                                 name='password'
@@ -141,6 +159,7 @@ export function Profile() {
                                 leftAddOn={<MdLockOutline />}
                                 options={{ disabled: !isEnabled }}
                             />
+                            {errors.password && <FormError error={errors.password.message?.toString() ?? ""} />}
                             <Field
                                 name='confirmPassword'
                                 placeholder='Confirm Password. . .'
@@ -148,6 +167,7 @@ export function Profile() {
                                 variant='flushed'
                                 leftAddOn={<MdOutlineLockPerson />}
                             />
+                            {errors.confirmPassword && <FormError error={errors.confirmPassword.message?.toString() ?? ""} />}
                             <Button mt='10px' variant='outline' onClick={handleSubmit(updateProfile)}>Atualizar Dados</Button>
                         </>}
                         <HStack m='20px auto' alignItems='center' w='auto' cursor='pointer'>

@@ -14,28 +14,41 @@ import { signUpRequest } from "../api/user";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../hooks/useToast";
 
 export function SignUp() {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(signUpSchema)});
     const { add } = useLocalStorage();
     const { setIsAuthenticated } = useAuth();
+    const toast = useToast();
     const navigate = useNavigate();
 
     const signUp = async (data: any) => {
         try {
             const response = await signUpRequest(data);
             add('access_token', response.session);
+            toast({ description: 'Successfuly created an account!', status: 'success' });
             setIsAuthenticated(true);
             navigate('/home')
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'success' });
         }
     }
 
     return (
         <Container>
             <Header />
-            <Stack m='5% auto' borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
+            <Stack 
+                m={['40% auto', '30% auto', '20% auto', '5% auto']} 
+                borderRadius='10px' 
+                w={['90%', '70%', '60%', '35%']} 
+                p='10px' 
+                boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'
+            >
                 <Field
                     name='name'
                     placeholder='Name. . .'

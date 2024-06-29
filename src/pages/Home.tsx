@@ -20,7 +20,7 @@ export function Home() {
     return (
         <Container>
             <Header />
-            <Stack m='5% auto' w='40%'>
+            <Stack m='5% auto' w={['90%', '75%', '60%', '40%']}>
                 <Box>
                     <Button variant='ghost' w='auto' onClick={() => setIsNewTrackOpen(true)}>
                         <FaPlus />

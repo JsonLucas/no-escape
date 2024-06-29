@@ -33,7 +33,13 @@ export function Login() {
     return (
         <Container>
             <Header /> 
-            <Stack m='10% auto' borderRadius='10px' w='30%' p='10px' boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'>
+            <Stack 
+                m={['50% auto', '40% auto', '25% auto', '10% auto']} 
+                borderRadius='10px' 
+                w={['90%', '70%', '50%', '30%']} 
+                p='10px' 
+                boxShadow='0px 1px 10px 0px rgba(0, 0, 0, 0.5)'
+            >
                 <Field
                     name='email'
                     placeholder='Email. . .'

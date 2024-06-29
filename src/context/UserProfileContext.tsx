@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { IUser } from "../interfaces/User";
 
-type Profile = Omit<IUser, 'password'>;
+type Profile = { data: Omit<IUser, 'password'>, isLoading: boolean };
 
 interface ProfileContext {
     profile: Profile,

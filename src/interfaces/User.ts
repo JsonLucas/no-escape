@@ -1,4 +1,5 @@
 export interface IUser {
+    id: number,
     name: string,
     email: string,
     phone: string,
@@ -7,5 +8,5 @@ export interface IUser {
 }
 
 export type Login = Pick<IUser, 'email' | 'password'>;
-export type SignUp = Omit<IUser, 'picture'>;
-export type Profile = Omit<IUser, 'password' | 'picture'>;
+export type SignUp = Omit<IUser, 'id' | 'picture'>;
+export type Profile = Omit<IUser, 'id' | 'password' | 'picture'>;

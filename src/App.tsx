@@ -5,9 +5,17 @@ import { SignUp } from './pages/SignUp'
 import { NotFound } from './pages/NotFound'
 import { Profile } from './pages/Profile'
 import { useAuth } from './context/AuthContext'
+import { useLocalStorage } from './hooks/useLocalStorage'
+import { useEffect } from 'react'
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { get } = useLocalStorage();
+
+  useEffect(() => {
+    if(get('access_token')) setIsAuthenticated(true);
+  }, [isAuthenticated]);
+  
   return (
         <BrowserRouter>
           <Routes>
