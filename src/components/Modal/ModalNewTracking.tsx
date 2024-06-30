@@ -3,11 +3,11 @@ import { Field } from "../Field";
 import { useForm } from "react-hook-form";
 import { IoCarOutline } from "react-icons/io5";
 import { BsCreditCard2Front } from "react-icons/bs";
-import { Track } from "../../interfaces/Track";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trackingSchema } from "../../utils/schemas";
 import { useTracking } from "../../hooks/useTracking";
 import { FormError } from "../FormError";
+import { useToast } from "../../hooks/useToast";
 
 interface Props {
     isOpen: boolean,
@@ -25,13 +25,19 @@ export function ModalNewTracking({ isOpen, onClose }: Props) {
     });
     const { createTracking } = useTracking();
     const descriptionField = watch('description');
+    const toast = useToast();
     const saveTrack = async (data: any) => {
         try {
             await createTracking(data);
+            toast({ description: 'Successfuly created the tracking.', status: 'success' });
             reset();
             onClose();
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 

@@ -35,7 +35,7 @@ export function SignUp() {
             if(e.response) errorMessage = e.response.data.message;
 
             console.log(e);
-            toast({ description: errorMessage, status: 'success' });
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 

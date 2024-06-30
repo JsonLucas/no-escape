@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from "@chakra-ui/react";
 import { useTracking } from "../../hooks/useTracking";
 import { ITrack } from "../../interfaces/Track";
+import { useToast } from "../../hooks/useToast";
 
 interface Props {
   isOpen: boolean,
@@ -11,12 +12,18 @@ interface Props {
 
 export function DeleteTrackingConfirmation({ isOpen, onClose, cancelRef, tracking }: Props) {
   const { deleteTracking } = useTracking();
+  const toast = useToast();
   const onConfirmDelete = async () => {
     try {
       await deleteTracking(tracking.id);
+      toast({ description: 'Successfuly deleted the tracking.', status: 'success' });
       onClose();
     } catch (e: any) {
+      let errorMessage = e.message;
+      if(e.response) errorMessage = e.response.data.message;
+
       console.log(e);
+      toast({ description: errorMessage, status: 'error' });
     }
   }
 

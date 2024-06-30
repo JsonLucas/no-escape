@@ -11,22 +11,29 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../hooks/useToast";
 
 export function Login() {
     const { register, handleSubmit } = useForm({ resolver: zodResolver(loginSchema)});
     const { add } = useLocalStorage();
     const { setIsAuthenticated } = useAuth();
+    const toast = useToast();
     const navigate = useNavigate();
 
     const login = async (data: any) => {
         try {
             // console.log(data);
             const response = await loginRequest(data);
+            toast({ description: 'Successfuly logged in!', status: 'success' });
             add('access_token', response.session);
             setIsAuthenticated(true);
             navigate('/home');
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 

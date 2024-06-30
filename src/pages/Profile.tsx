@@ -14,6 +14,7 @@ import { useProfile } from "../hooks/useProfile";
 import { useDropzone } from "react-dropzone";
 import { useUserProfileContext } from "../context/UserProfileContext";
 import { FormError } from "../components/FormError";
+import { useToast } from "../hooks/useToast";
 
 type PreviewImage = {
     localUrl: string,
@@ -26,6 +27,7 @@ export function Profile() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: zodResolver(updateProfileSchema) });
     const [isEnabled, setIsEnabled] = useState(false);
     const [image, setImage] = useState({} as PreviewImage);
+    const toast = useToast();
     const onDrop = useCallback((acceptedFiles: File[]) => {
         acceptedFiles.forEach((file) => {
             const reader = new FileReader();
@@ -55,18 +57,28 @@ export function Profile() {
     const updateProfile = async (data: any) => {
         try {
             await update({ ...data, id: profile.data.id });
+            toast({ description: 'Successfuly updated your profile!', status: 'success' });
             setIsEnabled(false);
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 
     const updatePicture = async () => {
         try {
             await updateProfilePicture(image.file);
+            toast({ description: 'Successfuly updated your profile picture!', status: 'success' });
             setImage({} as PreviewImage);
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 

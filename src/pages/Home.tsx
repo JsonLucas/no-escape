@@ -15,7 +15,18 @@ export function Home() {
     const [isNewTrackOpen, setIsNewTrackOpen] = useState(false);
     const [isUpdateTrackOpen, setIsUpdateTrackOpen] = useState(false);
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+    const [tracking, setTracking] = useState({} as ITrack);
     const cancelRef = useRef();
+
+    const openModalUpdateTracking = (tracking: ITrack) => {
+        setTracking(tracking);
+        setIsUpdateTrackOpen(true);
+    }
+
+    const openModalDeleteTracking = (tracking: ITrack) => {
+        setTracking(tracking);
+        setIsDeleteConfirmationOpen(true);
+    }
 
     return (
         <Container>
@@ -36,18 +47,28 @@ export function Home() {
                                 <Flex justifyContent='space-between'>
                                     <Text>{item.vehicleName}</Text>
                                     <HStack>
-                                        <IoPencil onClick={() => setIsUpdateTrackOpen(true)} size={19} cursor='pointer' />
-                                        <IoTrash onClick={() => setIsDeleteConfirmationOpen(true)} size={19} cursor='pointer' />
+                                        <IoPencil onClick={() => openModalUpdateTracking(item)} size={19} cursor='pointer' />
+                                        <IoTrash onClick={() => openModalDeleteTracking(item)} size={19} cursor='pointer' />
                                     </HStack>
                                 </Flex>
                                 <Text>{item.vehiclePlate}</Text>
                                 <Text>{(item.description && item.description.length > 0) ? item.description : 'Nenhuma descrição fornecida.'}</Text>
-                                <ModalUpdateTracking isOpen={isUpdateTrackOpen} onClose={() => setIsUpdateTrackOpen(false)} id={item.id} defaultValues={item} />
-                                <DeleteTrackingConfirmation isOpen={isDeleteConfirmationOpen} onClose={() => setIsDeleteConfirmationOpen(false)} cancelRef={cancelRef} tracking={item} />
                             </Stack>
                         )}
                     </Stack>
                 }
+                
+                <ModalUpdateTracking 
+                    isOpen={isUpdateTrackOpen} 
+                    onClose={() => setIsUpdateTrackOpen(false)} 
+                    id={tracking.id} 
+                    defaultValues={{
+                        description: tracking.description,
+                        vehicleName: tracking.vehicleName,
+                        vehiclePlate: tracking.vehiclePlate
+                    }} 
+                />
+                <DeleteTrackingConfirmation isOpen={isDeleteConfirmationOpen} onClose={() => setIsDeleteConfirmationOpen(false)} cancelRef={cancelRef} tracking={tracking} />
                 <ModalNewTracking isOpen={isNewTrackOpen} onClose={() => setIsNewTrackOpen(false)} />
             </Stack>
         </Container>

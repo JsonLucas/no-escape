@@ -1,4 +1,4 @@
-import { Text, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import { Text, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react";
 import { Field } from "../Field";
 import { useForm } from "react-hook-form";
 import { IoCarOutline } from "react-icons/io5";
@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { trackingSchema } from "../../utils/schemas";
 import { useTracking } from "../../hooks/useTracking";
 import { FormError } from "../FormError";
+import { useEffect } from "react";
 
 interface Props {
     isOpen: boolean,
@@ -17,16 +18,22 @@ interface Props {
 }
 
 export function ModalUpdateTracking({ isOpen, onClose, defaultValues, id }: Props) {
-    const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({ defaultValues, resolver: zodResolver(trackingSchema) });
+    const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(trackingSchema) });
     const { updateTracking } = useTracking();
+    const toast = useToast();
     const descriptionField = watch('description');
 
     const updateTrack = async (data: any) => {
         try {
             await updateTracking({ tracking: data, id });
+            toast({ description: 'Successfuly updated the tracking.', status: 'success' });
             onClose();
         } catch (e: any) {
+            let errorMessage = e.message;
+            if(e.response) errorMessage = e.response.data.message;
+
             console.log(e);
+            toast({ description: errorMessage, status: 'error' });
         }
     }
 
@@ -34,6 +41,10 @@ export function ModalUpdateTracking({ isOpen, onClose, defaultValues, id }: Prop
         reset();
         onClose();
     }
+
+    useEffect(() => {
+        reset(defaultValues);
+    }, [isOpen]);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -66,7 +77,7 @@ export function ModalUpdateTracking({ isOpen, onClose, defaultValues, id }: Prop
                         style={{ marginTop: '15px' }}
                     />
                     <Text w='100%' textAlign='right' color={(descriptionField && descriptionField.length > 100) ? 'red.300' : 'auto'}>
-                        {(descriptionField && descriptionField.length) ?? "0"}/100 catacteres
+                        {(descriptionField && descriptionField.length) || "0"}/100 catacteres
                     </Text>
                     {errors.description && <FormError error={errors.description.message?.toString() ?? ""} />}
                 </ModalBody>
