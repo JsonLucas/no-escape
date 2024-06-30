@@ -46,7 +46,7 @@ export function Profile() {
         });
     }, []);
 
-    const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+    const { getRootProps, getInputProps, acceptedFiles, fileRejections } = useDropzone({
         onDrop,
         maxSize: 1048576,
         accept: {
@@ -91,7 +91,7 @@ export function Profile() {
                 m='5% auto'
                 justifyContent='space-between'
             >
-                <Stack>
+                <Stack maxW='45%'>
                     <Box
                         m={['auto', 'auto', 'auto', 'unset']}
                         h={['10rem', '12rem', '16rem', '20rem']}
@@ -117,17 +117,18 @@ export function Profile() {
                         </>}
                         {acceptedFiles.length > 0 && Object.keys(image).length > 0 &&
                             <Stack>
-                                <Flex cursor='pointer' onClick={updatePicture}>
+                                <Flex m='auto' cursor='pointer' onClick={updatePicture}>
                                     <MdOutlineCheck size={22} style={{ marginRight: '5px' }} />
                                     <Text>Confirmar</Text>
                                 </Flex>
-                                <Flex cursor='pointer' onClick={() => setImage({} as PreviewImage)}>
+                                <Flex m='auto' cursor='pointer' onClick={() => setImage({} as PreviewImage)}>
                                     <MdOutlineCancel size={22} style={{ marginRight: '5px' }} />
                                     <Text>Cancelar</Text>
                                 </Flex>
                             </Stack>
                         }
                     </Stack>
+                    {fileRejections.length > 0 && <FormError error='A imagem deve ter no máximo 1mb e ser dos formatos: .png, .jpg ou .jpeg' />}
                 </Stack>
                 <Stack justifyContent='center' w={['100%', '100%', '100%', '55%']}>
                     {profile.isLoading && <Spinner />}
@@ -167,6 +168,7 @@ export function Profile() {
                                 name='password'
                                 placeholder='Password. . .'
                                 register={register}
+                                type='password'
                                 variant='flushed'
                                 leftAddOn={<MdLockOutline />}
                                 options={{ disabled: !isEnabled }}
@@ -176,6 +178,7 @@ export function Profile() {
                                 name='confirmPassword'
                                 placeholder='Confirm Password. . .'
                                 register={register}
+                                type='password'
                                 variant='flushed'
                                 leftAddOn={<MdOutlineLockPerson />}
                             />
@@ -183,14 +186,14 @@ export function Profile() {
                             <Button mt='10px' variant='outline' onClick={handleSubmit(updateProfile)}>Atualizar Dados</Button>
                         </>}
                         <HStack m='20px auto' alignItems='center' w='auto' cursor='pointer'>
-                            {isEnabled && <>
+                            {isEnabled && <HStack onClick={() => { reset(); setIsEnabled(false) }}>
                                 <MdOutlineCancel />
-                                <Text onClick={() => { reset(); setIsEnabled(false) }}>Cancelar</Text>
-                            </>}
-                            {!isEnabled && <>
+                                <Text>Cancelar</Text>
+                            </HStack>}
+                            {!isEnabled && <HStack onClick={() => setIsEnabled(!isEnabled)}>
                                 <IoPencil size={22} />
-                                <Text onClick={() => setIsEnabled(!isEnabled)}>Editar</Text>
-                            </>}
+                                <Text>Editar</Text>
+                            </HStack>}
                         </HStack>
                     </>}
                 </Stack>

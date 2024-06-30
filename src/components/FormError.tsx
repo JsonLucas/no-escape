@@ -6,6 +6,6 @@ interface Props {
 
 export function FormError({ error }: Props) {
     return (
-        <Text color='red.300'>{error}</Text>
+        <Text color='red.300' w='100%'>{error}</Text>
     );
 }
