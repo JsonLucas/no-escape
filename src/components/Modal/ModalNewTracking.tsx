@@ -34,7 +34,10 @@ export function ModalNewTracking({ isOpen, onClose }: Props) {
             onClose();
         } catch (e: any) {
             let errorMessage = e.message;
-            if(e.response) errorMessage = e.response.data.message;
+            if(e.response) {
+                if(e.response.data.error) errorMessage = e.response.data.error.message; 
+                else errorMessage = e.response.data.message;
+            }
 
             console.log(e);
             toast({ description: errorMessage, status: 'error' });
