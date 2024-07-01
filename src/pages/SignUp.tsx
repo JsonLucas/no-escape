@@ -15,10 +15,11 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../hooks/useToast";
+import { useEffect } from "react";
 
 export function SignUp() {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(signUpSchema)});
-    const { add } = useLocalStorage();
+    const { get, add } = useLocalStorage();
     const { setIsAuthenticated } = useAuth();
     const toast = useToast();
     const navigate = useNavigate();
@@ -41,6 +42,13 @@ export function SignUp() {
             toast({ description: errorMessage, status: 'error' });
         }
     }
+
+    useEffect(() => {
+        if(get('access_token')) {
+            setIsAuthenticated(true);
+            navigate('/home')
+        }
+    }, []);
 
     return (
         <Container>

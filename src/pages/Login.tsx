@@ -16,8 +16,8 @@ import { useEffect } from "react";
 
 export function Login() {
     const { register, handleSubmit } = useForm({ resolver: zodResolver(loginSchema)});
-    const { add } = useLocalStorage();
-    const { isAuthenticated, setIsAuthenticated } = useAuth();
+    const { get, add } = useLocalStorage();
+    const { setIsAuthenticated } = useAuth();
     const toast = useToast();
     const navigate = useNavigate();
 
@@ -42,7 +42,10 @@ export function Login() {
     }
 
     useEffect(() => {
-        if(isAuthenticated) navigate('/home');
+        if(get('access_token')) {
+            setIsAuthenticated(true);
+            navigate('/home')
+        }
     }, []);
 
     return (

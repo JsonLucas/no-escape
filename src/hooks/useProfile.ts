@@ -2,9 +2,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserProfileRequest, updateUserProfilePictureRequest, updateUserProfileRequest } from "../api/user";
 import { IUser } from "../interfaces/User";
 import { queryClient } from "../main";
+import { useAuth } from "../context/AuthContext";
 
 export const useProfile = () => {
-    const { data, isLoading, refetch } = useQuery({ queryKey: ['user-profile'], queryFn: getUserProfileRequest });
+    const { isAuthenticated} = useAuth();
+    const { data, isLoading, refetch } = useQuery({ queryKey: ['user-profile'], queryFn: getUserProfileRequest, enabled: isAuthenticated  });
 
     const { mutateAsync } = useMutation({ 
         mutationFn: (body: IUser) => updateUserProfileRequest(body), 
