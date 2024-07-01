@@ -14,7 +14,7 @@ import { useAuth } from "../context/AuthContext";
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { profile, setProfile } = useUserProfileContext();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated,setIsAuthenticated } = useAuth();
     const { toggleColorMode, colorMode } = useColorMode();
     const { remove } = useLocalStorage();
     const { pathname } = useLocation();
@@ -23,10 +23,12 @@ export function Header() {
     const navigate = useNavigate();
 
     const logout = async () => {
-        remove('access_token');
         try {
             await logoutRequest();
+            setIsAuthenticated(false);
             toast({ description: 'Successfuly logged out.', status: 'success' });
+            remove('access_token');
+            navigate('/');
         } catch (e: any) {
             let errorMessage = e.message;
             if (e.response) errorMessage = e.response.data.message;
@@ -34,7 +36,6 @@ export function Header() {
             console.log(e);
             toast({ description: errorMessage, status: 'success' });
         }
-        navigate('/');
     }
 
     useEffect(() => {
