@@ -4,7 +4,9 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 const { get } = useLocalStorage();
 
 export const api = axios.create({ 
-    baseURL: "34.201.146.137:5000"
+    baseURL: import.meta.env.REACT_APP_ENVIRONMENT === 'production' 
+    ? import.meta.env.REACT_APP_API_URL 
+    : import.meta.env.VITE_API_URL 
 });
 
 api.interceptors.request.use((request) => {
