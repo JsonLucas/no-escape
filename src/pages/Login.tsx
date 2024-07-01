@@ -12,11 +12,12 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../hooks/useToast";
+import { useEffect } from "react";
 
 export function Login() {
     const { register, handleSubmit } = useForm({ resolver: zodResolver(loginSchema)});
     const { add } = useLocalStorage();
-    const { setIsAuthenticated } = useAuth();
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const toast = useToast();
     const navigate = useNavigate();
 
@@ -39,6 +40,10 @@ export function Login() {
             toast({ description: errorMessage, status: 'error' });
         }
     }
+
+    useEffect(() => {
+        if(isAuthenticated) navigate('/home');
+    }, []);
 
     return (
         <Container>
